@@ -71,7 +71,7 @@ Pengguna melakukan login menggunakan username dan password yang telah terdaftar 
 ### 📌 Diagram ERD
 
 ```markdown
-![ERD Program Masjid](erd.png)
+<img src="erd.png" width="100%">
 ```
 
 ### 🔗 Struktur Relasi
@@ -243,3 +243,5 @@ composer run dev
 ## 📌 Version
 
 **Program Masjid v1.0**
+
+### Built with ❤️ by Mr_UwaaW
