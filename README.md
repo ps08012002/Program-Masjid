@@ -95,19 +95,42 @@ Daerah
 ## 📁 Struktur Folder
 
 ```text
-app/
-├── Http/
-├── Models/
-
-database/
-├── migrations/
-
-resources/
-├── views/
-
-routes/
-
-storage/
+program-masjid/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   └── Middleware/
+│   └── Models/
+│
+├── database/
+│   └── migrations/
+│
+├── resources/
+│   └── views/
+│       ├── auth/
+│       ├── dashboard/
+│       ├── daerah/
+│       ├── masjid/
+│       ├── kelas/
+│       ├── murid/
+│       ├── pengajar/
+│       ├── user/
+│       └── laporan/
+│
+├── routes/
+│   ├── web.php
+│   └── auth.php
+│
+├── storage/
+│   └── app/public/
+│       └── murid/
+│
+├── public/
+│
+├── README.md
+│
+└── composer.json
 ```
 
 ### 📂 Penjelasan Folder
