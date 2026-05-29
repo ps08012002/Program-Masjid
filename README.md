@@ -70,9 +70,9 @@ Pengguna melakukan login menggunakan username dan password yang telah terdaftar 
 
 ### 📌 Diagram ERD
 
-```markdown
-<img src="erd.png" width="100%">
-```
+<p align="center">
+    <img src="erd.png" width="900">
+</p>
 
 ### 🔗 Struktur Relasi
 
