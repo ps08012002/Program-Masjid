@@ -3,87 +3,84 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Program Masjid</title>
+        <title>Program Masjid - Login</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body>
+    <body class="antialiased font-sans">
         <div class="relative min-h-screen">
-            <!-- Background -->
             <div class="absolute inset-0">
                 <img
                     src="{{ asset('images/background.jpg') }}"
-                    alt="Background"
+                    alt="Background Masjid"
                     class="w-full h-full object-cover"
                 />
-
-                <div class="absolute inset-0 bg-black/50"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-teal-900/90 via-emerald-900/80 to-black/90"></div>
             </div>
 
-            <!-- Content -->
-            <div class="relative flex items-center justify-center min-h-screen">
-                <div
-                    class="w-full max-w-md bg-teal-500/95 rounded-[35px] shadow-2xl border-4 border-teal-700 p-10"
-                >
+            <div class="relative flex items-center justify-center min-h-screen p-4">
+                <div class="w-full max-w-md bg-white/10 backdrop-blur-md rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] border border-white/20 p-8 sm:p-10">
+                    
                     <div class="text-center mb-8">
-                        <div
-                            class="w-20 h-20 mx-auto rounded-full border-2 border-white flex items-center justify-center"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="w-10 h-10 text-white"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5.121 17.804A9 9 0 1118.88 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
+                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-emerald-400 to-teal-600 shadow-lg flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
 
-                        <h1 class="text-white text-2xl font-bold mt-4">
+                        <h1 class="text-white text-3xl font-extrabold tracking-wide drop-shadow-md">
                             Program Masjid
                         </h1>
+                        <p class="text-teal-100/80 mt-2 text-sm">Silakan masuk ke akun Anda</p>
                     </div>
+
                     @if ($errors->any())
+                        <div class="mb-6 bg-red-500/20 border border-red-500/50 backdrop-blur-sm text-red-100 px-4 py-3 rounded-xl flex items-center shadow-sm">
+                            <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-sm font-medium">{{ $errors->first() }}</span>
+                        </div>
+                    @endif
 
-    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-
-        {{ $errors->first() }}
-
-    </div>
-
-@endif
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
 
-                        <div class="mb-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
                             <input
                                 type="text"
                                 name="username"
                                 value="{{ old('username') }}"
                                 placeholder="Username"
-                                class="w-full rounded-full border-0 px-4 py-3 focus:ring-2 focus:ring-white"
+                                class="w-full bg-white/10 text-white placeholder-teal-100/70 border border-white/20 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all duration-300"
+                                required
                             />
                         </div>
 
-                        <div class="mb-6">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
                             <input
                                 type="password"
                                 name="password"
                                 placeholder="Password"
-                                class="w-full rounded-full border-0 px-4 py-3 focus:ring-2 focus:ring-white"
+                                class="w-full bg-white/10 text-white placeholder-teal-100/70 border border-white/20 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all duration-300"
+                                required
                             />
                         </div>
 
                         <button
                             type="submit"
-                            class="w-full bg-white text-teal-700 font-bold py-3 rounded-full hover:bg-gray-100 transition"
+                            class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3.5 rounded-xl hover:from-emerald-400 hover:to-teal-400 focus:ring-4 focus:ring-teal-500/50 transform hover:-translate-y-1 transition-all duration-300 shadow-lg mt-4 tracking-wider"
                         >
                             LOGIN
                         </button>
