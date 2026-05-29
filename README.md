@@ -208,7 +208,7 @@ DB_PASSWORD=
 php artisan migrate
 ```
 
-Gunakan jika ingin mengunakan data dummy
+#### Gunakan jika ingin mengunakan data dummy
 ```bash
 php artisan db:seed
 ```
