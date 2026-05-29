@@ -4,21 +4,18 @@
 
 <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8">
     
-    <!-- Header Form -->
     <div class="mb-8 border-b border-gray-50 pb-4">
         <h1 class="text-2xl font-extrabold text-gray-800 tracking-tight">
             Tambah User Baru
         </h1>
         <p class="text-sm text-gray-500 mt-1">
-            Dafrarkan kredensial login baru, tentukan tingkat hak akses, serta tautkan penugasan wilayah operasional masjid.
+            Daftarkan kredensial login baru, tentukan tingkat hak akses, serta tautkan penugasan wilayah operasional masjid.
         </p>
     </div>
 
-    <!-- Form Utama -->
     <form action="{{ route('user.store') }}" method="POST" class="space-y-6">
         @csrf
 
-        <!-- Input Nama -->
         <div>
             <label for="name" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
                 Nama Lengkap
@@ -41,23 +38,22 @@
             @enderror
         </div>
 
-        <!-- Input Username -->
         <div>
             <label for="username" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
                 Username
             </label>
-            <div class="relative">
-                <input type="text"
-                       id="username"
-                       name="username"
-                       value="{{ old('username') }}"
-                       placeholder="Contoh: baihaqi_operator"
-                       class="w-full bg-gray-50/50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all duration-200 @error('username') border-rose-400 focus:ring-rose-500/10 focus:border-rose-500 @enderror"
-                >
-                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400 font-medium text-sm">
-                    @
-                </div>
-            </div>
+            <input type="text"
+                   id="username"
+                   name="username"
+                   value="{{ old('username') }}"
+                   placeholder="Contoh: baihaqi_operator"
+                   {{-- Mencegah ketikan atau paste karakter @ secara real-time --}}
+                   oninput="this.value = this.value.replace(/@/g, '')"
+                   {{-- Validasi lapis kedua dari HTML5 --}}
+                   pattern="[^@]+"
+                   title="Username tidak boleh mengandung karakter @"
+                   class="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all duration-200 @error('username') border-rose-400 focus:ring-rose-500/10 focus:border-rose-500 @enderror"
+            >
 
             @error('username')
                 <p class="text-xs font-medium text-rose-600 mt-1.5 flex items-center gap-1">
@@ -69,7 +65,6 @@
             @enderror
         </div>
 
-        <!-- Input Password -->
         <div>
             <label for="password" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
                 Password Akun
@@ -91,7 +86,6 @@
             @enderror
         </div>
 
-        <!-- Pilihan Role (Dropdown) -->
         <div>
             <label for="role" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
                 Hak Akses (Role)
@@ -121,7 +115,6 @@
             @enderror
         </div>
 
-        <!-- Pilihan Masjid (Dropdown) -->
         <div>
             <label for="id_masjid" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
                 Afiliasi / Tugas Lokasi Masjid
@@ -155,7 +148,6 @@
             @enderror
         </div>
 
-        <!-- Tombol Aksi -->
         <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-50">
             <a href="{{ route('user.index') }}"
                class="inline-flex items-center justify-center font-semibold text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 px-5 py-2.5 rounded-xl transition-all duration-200">

@@ -60,7 +60,7 @@
 
                         <!-- Username -->
                         <td class="px-6 py-4 text-sm text-gray-600 font-medium">
-                            <span class="text-gray-400">@</span>{{ $item->username }}
+                            <span class="text-gray-400"></span>{{ $item->username }}
                         </td>
                         
                         <!-- Badge Role -->

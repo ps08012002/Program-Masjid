@@ -38,34 +38,33 @@
                 </p>
             @enderror
         </div>
+<div>
+    <label for="username" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
+        Username
+    </label>
+    
+    <input type="text"
+           id="username"
+           name="username"
+           value="{{ old('username', $user->username) }}"
+           placeholder="Contoh: nafis_admin"
+           {{-- Proteksi 1: Otomatis menghapus karakter @ saat user mengetik --}}
+           oninput="this.value = this.value.replace(/@/g, '')"
+           {{-- Proteksi 2: Validasi HTML5 agar form tidak bisa disubmit jika ada karakter @ --}}
+           pattern="[^@]+"
+           title="Username tidak boleh mengandung karakter @"
+           class="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all duration-200 @error('username') border-rose-400 focus:ring-rose-500/10 focus:border-rose-500 @enderror"
+    >
 
-        <div>
-            <label for="username" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
-                Username
-            </label>
-            <div class="relative">
-                <input type="text"
-                       id="username"
-                       name="username"
-                       value="{{ old('username', $user->username) }}"
-                       placeholder="Contoh: nafis_admin"
-                       class="w-full bg-gray-50/50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all duration-200 @error('username') border-rose-400 focus:ring-rose-500/10 focus:border-rose-500 @enderror"
-                >
-                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400 font-medium text-sm">
-                    @
-                </div>
-            </div>
-
-            @error('username')
-                <p class="text-xs font-medium text-rose-600 mt-1.5 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {{ $message }}
-                </p>
-            @enderror
-        </div>
-
+    @error('username')
+        <p class="text-xs font-medium text-rose-600 mt-1.5 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ $message }}
+        </p>
+    @enderror
+</div>
         <div>
             <label for="password" class="block text-sm font-semibold text-gray-700 tracking-wide mb-1">
                 Password Baru

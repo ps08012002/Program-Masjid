@@ -4,7 +4,6 @@
 
 <!-- Header Dashboard -->
 <div class="relative bg-gradient-to-r from-teal-600 to-emerald-500 rounded-3xl p-8 text-white mb-8 shadow-lg overflow-hidden">
-    <!-- Dekorasi Background -->
     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 -mb-8 -ml-8 w-40 h-40 bg-black/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -33,7 +32,7 @@
 
     <!-- Dashboard Admin: Statistik -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-        
+
         <!-- Card: Daerah -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
             <div class="flex justify-between items-start">
@@ -91,11 +90,37 @@
 
     </div>
 
+    <!-- Chart & Top 5 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+        <!-- Chart -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Jumlah Murid per Masjid</h2>
+            <div class="h-80">
+                <canvas id="muridChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Top 5 -->
+<div class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-lg font-bold mb-4 text-gray-800">Top 5 Masjid Teraktif</h2>
+    <div class="space-y-1">
+        @foreach($topMasjid as $item)
+            <div class="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
+                <span class="text-sm font-medium text-gray-700 tracking-wide">{{ $item['nama'] }}</span>
+                <span class="font-bold text-teal-700 bg-teal-50 border border-teal-100/80 px-3 py-1 rounded-xl text-xs whitespace-nowrap">
+                    {{ $item['jumlah'] }} Murid
+                </span>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+    </div>
+
     <!-- Header Tabel & Export -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h2 class="text-2xl font-bold text-gray-800">
-            Ringkasan Data Masjid
-        </h2>
+        <h2 class="text-2xl font-bold text-gray-800">Ringkasan Data Masjid</h2>
         <a href="{{ route('laporan.dashboard') }}"
            class="inline-flex items-center gap-2 bg-gradient-to-r from-rose-600 to-red-500 text-white font-semibold px-5 py-2.5 rounded-xl hover:from-rose-500 hover:to-red-400 focus:ring-4 focus:ring-red-500/30 transition-all shadow-md transform hover:-translate-y-0.5">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,23 +146,15 @@
                 <tbody class="divide-y divide-gray-50">
                     @forelse($ringkasanMasjid as $item)
                         <tr class="hover:bg-teal-50/30 transition-colors duration-200">
-                            <td class="px-6 py-4 font-medium text-gray-800">
-                                {{ $item->nama }}
-                            </td>
+                            <td class="px-6 py-4 font-medium text-gray-800">{{ $item->nama }}</td>
                             <td class="px-6 py-4 text-gray-600">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                     {{ $item->daerah->nama }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-center text-gray-600">
-                                {{ $item->kelas_count }}
-                            </td>
-                            <td class="px-6 py-4 text-center text-gray-600">
-                                {{ $item->murid_count }}
-                            </td>
-                            <td class="px-6 py-4 text-center text-gray-600">
-                                {{ $item->pengajar_count }}
-                            </td>
+                            <td class="px-6 py-4 text-center text-gray-600">{{ $item->kelas_count }}</td>
+                            <td class="px-6 py-4 text-center text-gray-600">{{ $item->murid_count }}</td>
+                            <td class="px-6 py-4 text-center text-gray-600">{{ $item->pengajar_count }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -154,11 +171,106 @@
         </div>
     </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const ctx = document.getElementById('muridChart');
+
+    if (!ctx) {
+        console.log('Canvas muridChart tidak ditemukan');
+        return;
+    }
+
+    const labels = @json(collect($grafikMurid)->pluck('nama'));
+    const data   = @json(collect($grafikMurid)->pluck('jumlah'));
+
+    // Pengaturan Font Global (Plus Jakarta Sans)
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.color = '#6B7280'; 
+
+    // Palet warna yang bervariasi namun tetap serasi (tidak monoton & profesional)
+    const colorfulPalette = [
+        '#14B8A6', // Teal
+        '#3B82F6', // Blue
+        '#10B981', // Emerald
+        '#6366F1', // Indigo
+        '#F59E0B', // Amber
+        '#06B6D4', // Cyan
+        '#8B5CF6', // Violet
+        '#F97316', // Orange
+        '#EC4899', // Pink
+        '#84CC16'  // Lime
+    ];
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Jumlah Murid',
+                data: data,
+                backgroundColor: colorfulPalette, // Otomatis berulang jika data melebihi 10
+                borderRadius: 8, 
+                borderSkipped: false,
+                maxBarThickness: 35 
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: false 
+                },
+                tooltip: {
+                    backgroundColor: '#0F172A', // Slate 900
+                    titleColor: '#FFFFFF',
+                    titleFont: { size: 13, weight: '700' },
+                    bodyColor: '#E2E8F0',
+                    bodyFont: { size: 13, weight: '500' },
+                    padding: 12,
+                    cornerRadius: 12,
+                    displayColors: false, 
+                    callbacks: {
+                        label: function(context) {
+                            return ` 🧑‍🎓 ${context.parsed.y} Santri / Murid`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { 
+                        display: false 
+                    },
+                    ticks: {
+                        font: { size: 11, weight: '500' },
+                        color: '#4B5563' 
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#F3F4F6', 
+                        drawBorder: false
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        font: { size: 11 },
+                        color: '#9CA3AF' 
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
 @else
 
     <!-- Dashboard User: Statistik -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
+
         <!-- Card: Kelas -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center">
             <div class="inline-flex p-3 rounded-2xl bg-amber-50 text-amber-500 mb-4">

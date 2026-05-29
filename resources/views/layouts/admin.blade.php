@@ -55,7 +55,7 @@
 
             @if(Auth::user()->role == 'admin')
             <div>
-                <span class="px-4 text-[11px] font-bold tracking-wider text-teal-500/80 uppercase block mb-3">Data Wilayah & Akun</span>
+                <span class="px-4 text-[11px] font-bold tracking-wider text-teal-500/80 uppercase block mb-3">Data Wilayah</span>
                 <ul class="space-y-1.5">
                     <li>
                         <a href="{{ route('daerah.index') }}"
@@ -74,15 +74,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
                             Direktori Masjid
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('user.index') }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-300 hover:bg-teal-900/50 hover:text-emerald-400 transition-all duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                            Manajemen User
                         </a>
                     </li>
                 </ul>
@@ -127,6 +118,23 @@
                     </li>
                 </ul>
             </div>
+
+            @if(Auth::user()->role == 'admin')
+            <div>
+                <span class="px-4 text-[11px] font-bold tracking-wider text-teal-500/80 uppercase block mb-3">Akun</span>
+                <ul class="space-y-1.5">
+                    <li>
+                        <a href="{{ route('user.index') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-300 hover:bg-teal-900/50 hover:text-emerald-400 transition-all duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            Manajemen User
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @endif
 
         </nav>
         
@@ -177,7 +185,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs px-4 py-2.5 rounded-xl border border-rose-100/60 transition-all duration-200 shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/xl" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         Keluar

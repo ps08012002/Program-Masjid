@@ -7,6 +7,7 @@ use App\Models\Masjid;
 use App\Models\Kelas;
 use App\Models\Murid;
 use App\Models\Pengajar;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -70,13 +71,36 @@ foreach ($ringkasanMasjid as $masjid) {
         $kelasIds
     )->count();
 }
+
+$grafikMurid = Masjid::all()
+    ->map(function ($masjid) {
+
+        $kelasIds = Kelas::where(
+            'id_masjid',
+            $masjid->id
+        )->pluck('id');
+
+        return [
+            'nama' => $masjid->nama,
+            'jumlah' => Murid::whereIn(
+                'id_kelas',
+                $kelasIds
+            )->count()
+        ];
+    });
+ 
+    $topMasjid = $grafikMurid
+    ->sortByDesc('jumlah')
+    ->take(5);
  return view('dashboard', compact(
     'totalDaerah',
     'totalMasjid',
     'totalKelas',
     'totalMurid',
     'totalPengajar',
-    'ringkasanMasjid'
+    'ringkasanMasjid',
+    'grafikMurid',
+    'topMasjid'
 ));
 }
 }
