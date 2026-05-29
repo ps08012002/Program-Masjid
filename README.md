@@ -208,6 +208,12 @@ DB_PASSWORD=
 php artisan migrate
 ```
 
+Gunakan jika ingin mengunakan data dummy
+```bash
+php artisan db:seed
+```
+
+
 #### 7️⃣ Buat Storage Link
 
 ```bash
