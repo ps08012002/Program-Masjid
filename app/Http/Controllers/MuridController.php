@@ -1,0 +1,192 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Murid;
+use App\Models\Kelas;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class MuridController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+    if (auth()->user()->role == 'admin') {
+
+        $murid = Murid::with(['kelas'])
+            ->latest()
+            ->paginate(10);
+
+    } else {
+
+        $murid = Murid::with(['kelas'])
+            ->whereHas('kelas', function ($query) {
+
+                $query->where(
+                    'id_masjid',
+                    auth()->user()->id_masjid
+                );
+
+            })
+            ->latest()
+            ->paginate(10);
+
+    }
+
+    return view('murid.index', compact('murid'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+    if (auth()->user()->role == 'admin') {
+
+        $kelas = Kelas::orderBy('nama')->get();
+
+    } else {
+
+        $kelas = Kelas::where(
+            'id_masjid',
+            auth()->user()->id_masjid
+        )->get();
+
+    }
+
+    return view('murid.create', compact('kelas'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+        'nama' => 'required|max:255',
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'id_kelas' => 'required|exists:tb_kelas,id',
+    ]);
+
+    $foto = null;
+
+    if ($request->hasFile('foto')) {
+
+        $foto = $request->file('foto')
+            ->store('murid', 'public');
+
+    }
+
+    Murid::create([
+        'nama' => $request->nama,
+        'foto' => $foto,
+        'id_kelas' => $request->id_kelas,
+    ]);
+
+    return redirect()
+        ->route('murid.index')
+        ->with('success', 'Data murid berhasil ditambahkan');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $murid = Murid::with('kelas')
+    ->findOrFail($id);
+
+if (
+    auth()->user()->role != 'admin'
+    &&
+    $murid->kelas->id_masjid != auth()->user()->id_masjid
+) {
+    abort(403);
+}
+
+    $kelas = Kelas::orderBy('nama')->get();
+
+    return view('murid.edit', compact(
+        'murid',
+        'kelas'
+    ));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+$murid = Murid::with('kelas')
+    ->findOrFail($id);
+
+if (
+    auth()->user()->role != 'admin'
+    &&
+    $murid->kelas->id_masjid != auth()->user()->id_masjid
+) {
+    abort(403);
+}
+
+    $request->validate([
+        'nama' => 'required|max:255',
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'id_kelas' => 'required|exists:tb_kelas,id',
+    ]);
+
+    if ($request->hasFile('foto')) {
+
+        if ($murid->foto) {
+            Storage::disk('public')->delete($murid->foto);
+        }
+
+        $murid->foto = $request->file('foto')
+            ->store('murid', 'public');
+    }
+
+    $murid->nama = $request->nama;
+    $murid->id_kelas = $request->id_kelas;
+
+    $murid->save();
+
+    return redirect()
+        ->route('murid.index')
+        ->with('success', 'Data murid berhasil diupdate');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+         $murid = Murid::findOrFail($id);
+
+    if ($murid->foto) {
+        Storage::disk('public')->delete($murid->foto);
+    }
+    
+    if (
+    auth()->user()->role != 'admin'
+    &&
+    $murid->kelas->id_masjid != auth()->user()->id_masjid
+) {
+    abort(403);
+}
+    $murid->delete();
+
+    return redirect()
+        ->route('murid.index')
+        ->with('success', 'Data murid berhasil dihapus');
+    }
+}
