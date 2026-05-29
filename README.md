@@ -71,7 +71,7 @@ Pengguna melakukan login menggunakan username dan password yang telah terdaftar 
 ### 📌 Diagram ERD
 
 ```markdown
-![ERD Program Masjid](docs/erd.png)
+![ERD Program Masjid](erd.png)
 ```
 
 ### 🔗 Struktur Relasi
