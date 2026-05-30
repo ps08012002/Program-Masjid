@@ -1,4 +1,4 @@
-# 🕌 Program Masjid
+<img width="1913" height="997" alt="image" src="https://github.com/user-attachments/assets/73dfe62c-01fa-4bbe-844d-6e9e8dad4d9e" /># 🕌 Program Masjid
 
 ## 📖 Deskripsi Program
 
@@ -147,9 +147,8 @@ program-masjid/
 
 ---
 
-## 🚀 Cara Menjalankan Program
 
-### 📥 Getting Started
+## 📥 Getting Started
 
 Clone repository:
 
@@ -220,7 +219,14 @@ php artisan db:seed
 php artisan storage:link
 ```
 
-#### 8️⃣ Jalankan Program
+#### 8️⃣ Build Program
+
+```bash
+npm run build
+```
+
+---
+### 🚀 Cara Menjalankan Program
 
 ```bash
 composer run dev
@@ -241,6 +247,8 @@ username : arra
 Password : 12345678
 role     : admin
 ```
+
+Jika tidak menggunakan seed bisa create akun baru dengan url [ipserver/UwaaW]
 
 ### 👑 Admin
 
