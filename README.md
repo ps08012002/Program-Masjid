@@ -25,7 +25,7 @@ Program Masjid adalah aplikasi berbasis web yang dirancang untuk membantu proses
 
 ### ⚙️ Backend
 
-- PHP 8.x
+- PHP 8.3++
 - Laravel 12/13
 
 ### 🎨 Frontend
