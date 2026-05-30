@@ -228,7 +228,19 @@ composer run dev
 
 ---
 
-## 📚 Penggunaan
+## 🔑 Default Account
+
+Berikut akun bawaan yang dapat digunakan untuk mengakses aplikasi setelah menjalankan seeder:
+
+```bash
+username : ps08012002
+Password : 12345678
+role     : admin
+
+username : arra
+Password : 12345678
+role     : admin
+```
 
 ### 👑 Admin
 
