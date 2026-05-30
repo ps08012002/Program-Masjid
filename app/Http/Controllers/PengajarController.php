@@ -11,32 +11,88 @@ class PengajarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-if (auth()->user()->role == 'admin') {
+    public function index(Request $request)
+{
+    $query = Pengajar::with('kelas');
 
-        $pengajar = Pengajar::with(['kelas'])
-            ->latest()
-            ->paginate(10);
+    // User hanya melihat pengajar masjid sendiri
+    if (auth()->user()->role != 'admin') {
+
+        $query->whereHas('kelas', function ($q) {
+
+            $q->where(
+                'id_masjid',
+                auth()->user()->id_masjid
+            );
+
+        });
+    }
+
+    // Search
+    if ($request->filled('search')) {
+
+        $query->where(
+            'nama',
+            'like',
+            '%' . $request->search . '%'
+        );
+    }
+
+    // Filter Kelas
+    if ($request->filled('kelas')) {
+
+        $query->where(
+            'id_kelas',
+            $request->kelas
+        );
+    }
+
+    // Sort
+    if ($request->sort == 'asc') {
+
+        $query->orderBy('nama');
+
+    } elseif ($request->sort == 'desc') {
+
+        $query->orderByDesc('nama');
 
     } else {
 
-        $pengajar = Pengajar::with(['kelas'])
-            ->whereHas('kelas', function ($query) {
-
-                $query->where(
-                    'id_masjid',
-                    auth()->user()->id_masjid
-                );
-
-            })
-            ->latest()
-            ->paginate(10);
+        $query->latest();
 
     }
 
-    return view('pengajar.index', compact('pengajar'));
+    $pengajar = $query
+        ->paginate(10)
+        ->withQueryString();
+
+    // Dropdown kelas
+    if (auth()->user()->role == 'admin') {
+
+        $kelas = Kelas::with('masjid')
+            ->orderBy('nama')
+            ->get();
+
+    } else {
+
+        $kelas = Kelas::with('masjid')
+            ->where(
+                'id_masjid',
+                auth()->user()->id_masjid
+            )
+            ->orderBy('nama')
+            ->get();
+
     }
+
+    return view(
+        'pengajar.index',
+        compact(
+            'pengajar',
+            'kelas'
+        )
+    );
+}
 
     /**
      * Show the form for creating a new resource.

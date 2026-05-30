@@ -10,13 +10,13 @@
         <p class="text-sm text-gray-500 mt-1">Kelola informasi profil, foto, dan penempatan kelas santri/murid.</p>
     </div>
 
-    <a href="{{ route('murid.create') }}"
+<a href="{{ route('murid.create') }}"
        class="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-500 text-white font-semibold px-5 py-2.5 rounded-xl hover:from-teal-500 hover:to-emerald-400 focus:ring-4 focus:ring-teal-500/30 shadow-md transform hover:-translate-y-0.5 transition-all">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m4 5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
         Tambah Murid
-    </a>
+</a>
 </div>
 
 @if(session('success'))
@@ -27,6 +27,83 @@
         <span class="text-sm font-medium">{{ session('success') }}</span>
     </div>
 @endif
+
+{{-- FORM FILTER DAN PENCARIAN YANG DIPERBARUI --}}
+<form id="filterForm" method="GET" class="mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+
+        {{-- Sisi Kiri: Filter Dropdowns --}}
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            
+            {{-- Filter Kelas --}}
+            <div class="relative w-full sm:w-56">
+                <select
+                    name="kelas"
+                    onchange="document.getElementById('filterForm').submit()"
+                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+                >
+                    <option value="">Semua Kelas</option>
+                    @foreach($kelas as $item)
+                        <option value="{{ $item->id }}" @selected(request('kelas') == $item->id)>
+                            {{ $item->nama }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Sort / Urutkan --}}
+            <div class="relative w-full sm:w-48">
+                <select
+                    name="sort"
+                    onchange="document.getElementById('filterForm').submit()"
+                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+                >
+                    <option value="">Urutkan Nama</option>
+                    <option value="asc" @selected(request('sort') == 'asc')>Nama A-Z</option>
+                    <option value="desc" @selected(request('sort') == 'desc')>Nama Z-A</option>
+                </select>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Sisi Kanan: Live Search Input --}}
+        <div class="relative w-full lg:w-80">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari nama murid..."
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+            >
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+
+    </div>
+</form>
 
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
@@ -159,14 +236,11 @@
         const itemNameSpan = document.getElementById('modal-item-name');
         const deleteForm = document.getElementById('global-delete-form');
         
-        // 1. Sematkan nama murid ke dalam teks konfirmasi modal
         itemNameSpan.textContent = `"${name}"`;
         
-        // 2. Buat URL endpoint destroy secara dinamis berdasarkan ID target
         let routePattern = "{{ route('murid.destroy', ':id') }}";
         deleteForm.action = routePattern.replace(':id', id);
         
-        // 3. Munculkan Modal
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.classList.add('overflow-hidden');
@@ -182,6 +256,30 @@
     function submitDeleteForm() {
         document.getElementById('global-delete-form').submit();
     }
+</script>
+
+<script>
+let timeout = null;
+const searchInput = document.getElementById('searchInput');
+
+if (searchInput) {
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            document.getElementById('filterForm').submit();
+        }, 500);
+    });
+
+    window.onload = function () {
+        if (searchInput.value.length > 0) {
+            searchInput.focus();
+            searchInput.setSelectionRange(
+                searchInput.value.length,
+                searchInput.value.length
+            );
+        }
+    };
+}
 </script>
 
 @endsection

@@ -12,29 +12,70 @@ class KelasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-  
-        if (auth()->user()->role == 'admin') {
+    public function index(Request $request)
+{
+    $query = Kelas::with('masjid');
 
-        $kelas = Kelas::with('masjid')
-            ->latest()
-            ->paginate(10);
+    // Role User hanya melihat masjid sendiri
+    if (auth()->user()->role != 'admin') {
+
+        $query->where(
+            'id_masjid',
+            auth()->user()->id_masjid
+        );
+    }
+
+    // Search
+    if ($request->filled('search')) {
+
+        $query->where(
+            'nama',
+            'like',
+            '%' . $request->search . '%'
+        );
+    }
+
+    // Filter Masjid
+    if (
+        auth()->user()->role == 'admin'
+        &&
+        $request->filled('masjid')
+    ) {
+
+        $query->where(
+            'id_masjid',
+            $request->masjid
+        );
+    }
+
+    // Sort
+    if ($request->sort == 'asc') {
+
+        $query->orderBy('nama');
+
+    } elseif ($request->sort == 'desc') {
+
+        $query->orderByDesc('nama');
 
     } else {
 
-        $kelas = Kelas::with('masjid')
-            ->where(
-                'id_masjid',
-                auth()->user()->id_masjid
-            )
-            ->latest()
-            ->paginate(10);
-
+        $query->latest();
     }
 
-    return view('kelas.index', compact('kelas'));
-    }
+    $kelas = $query
+        ->paginate(10)
+        ->withQueryString();
+
+    $masjid = Masjid::orderBy('nama')->get();
+
+    return view(
+        'kelas.index',
+        compact(
+            'kelas',
+            'masjid'
+        )
+    );
+}
 
     /**
      * Show the form for creating a new resource.
@@ -161,11 +202,6 @@ Kelas::create([
     $idMasjid = auth()->user()->id_masjid;
 }
 
-$kelas->update([
-    'nama' => $request->nama,
-    'id_masjid' => $idMasjid,
-]);
-
     $kelas->update([
         'nama' => $request->nama,
         'id_masjid' => $request->id_masjid,
@@ -197,7 +233,6 @@ if (auth()->user()->role == 'admin') {
     )->firstOrFail();
 }
 
-$kelas->delete();
 
     $kelas->delete();
 

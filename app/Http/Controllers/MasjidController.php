@@ -11,14 +11,56 @@ class MasjidController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-            $masjid = Masjid::with('daerah')
-        ->latest()
-        ->paginate(10);
+    public function index(Request $request)
+{
+    $query = Masjid::with('daerah');
 
-    return view('masjid.index', compact('masjid'));
+    // Search nama masjid
+    if ($request->filled('search')) {
+
+        $query->where(
+            'nama',
+            'like',
+            '%' . $request->search . '%'
+        );
     }
+
+    // Filter daerah
+    if ($request->filled('daerah')) {
+
+        $query->where(
+            'id_daerah',
+            $request->daerah
+        );
+    }
+
+    // Sort
+    if ($request->sort == 'asc') {
+
+        $query->orderBy('nama', 'asc');
+
+    } elseif ($request->sort == 'desc') {
+
+        $query->orderBy('nama', 'desc');
+
+    } else {
+
+        $query->latest();
+    }
+
+    $masjid = $query->paginate(10)
+        ->withQueryString();
+
+    $daerah = Daerah::orderBy('nama')->get();
+
+    return view(
+        'masjid.index',
+        compact(
+            'masjid',
+            'daerah'
+        )
+    );
+}
 
     /**
      * Show the form for creating a new resource.

@@ -12,14 +12,38 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-    $user = User::with('masjid')
-        ->latest()
-        ->paginate(10);
+    public function index(Request $request)
+{
+    $query = User::with('masjid');
 
-    return view('user.index', compact('user'));
+    if ($request->filled('search')) {
+
+        $query->where(function ($q) use ($request) {
+
+            $q->where(
+                'name',
+                'like',
+                '%' . $request->search . '%'
+            )
+            ->orWhere(
+                'username',
+                'like',
+                '%' . $request->search . '%'
+            );
+
+        });
     }
+
+    $user = $query
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view(
+        'user.index',
+        compact('user')
+    );
+}
 
     /**
      * Show the form for creating a new resource.

@@ -12,32 +12,85 @@ class MuridController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-    if (auth()->user()->role == 'admin') {
+    public function index(Request $request)
+{
+    $query = Murid::with('kelas');
 
-        $murid = Murid::with(['kelas'])
-            ->latest()
-            ->paginate(10);
+    // Role User hanya melihat murid masjid sendiri
+    if (auth()->user()->role != 'admin') {
+
+        $query->whereHas('kelas', function ($q) {
+
+            $q->where(
+                'id_masjid',
+                auth()->user()->id_masjid
+            );
+
+        });
+    }
+
+    // Search Nama Murid
+    if ($request->filled('search')) {
+
+        $query->where(
+            'nama',
+            'like',
+            '%' . $request->search . '%'
+        );
+    }
+
+    // Filter Kelas
+    if ($request->filled('kelas')) {
+
+        $query->where(
+            'id_kelas',
+            $request->kelas
+        );
+    }
+
+    // Sort
+    if ($request->sort == 'asc') {
+
+        $query->orderBy('nama');
+
+    } elseif ($request->sort == 'desc') {
+
+        $query->orderByDesc('nama');
 
     } else {
 
-        $murid = Murid::with(['kelas'])
-            ->whereHas('kelas', function ($query) {
-
-                $query->where(
-                    'id_masjid',
-                    auth()->user()->id_masjid
-                );
-
-            })
-            ->latest()
-            ->paginate(10);
+        $query->latest();
 
     }
 
-    return view('murid.index', compact('murid'));
+    $murid = $query
+        ->paginate(10)
+        ->withQueryString();
+
+    // Dropdown kelas
+    if (auth()->user()->role == 'admin') {
+
+        $kelas = Kelas::orderBy('nama')->get();
+
+    } else {
+
+        $kelas = Kelas::where(
+            'id_masjid',
+            auth()->user()->id_masjid
+        )
+        ->orderBy('nama')
+        ->get();
+
     }
+
+    return view(
+        'murid.index',
+        compact(
+            'murid',
+            'kelas'
+        )
+    );
+}
 
     /**
      * Show the form for creating a new resource.

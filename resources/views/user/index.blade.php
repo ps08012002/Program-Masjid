@@ -2,7 +2,6 @@
 
 @section('content')
 
-<!-- Header & Tombol Tambah -->
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
         <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight">
@@ -14,13 +13,12 @@
     <a href="{{ route('user.create') }}"
        class="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-500 text-white font-semibold px-5 py-2.5 rounded-xl hover:from-teal-500 hover:to-emerald-400 focus:ring-4 focus:ring-teal-500/30 shadow-md transform hover:-translate-y-0.5 transition-all">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m4 5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
         Tambah User
     </a>
 </div>
 
-<!-- Notifikasi Sukses -->
 @if(session('success'))
     <div class="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 px-4 py-3 rounded-xl flex items-center shadow-sm">
         <svg class="w-5 h-5 mr-2.5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +28,27 @@
     </div>
 @endif
 
-<!-- Tabel Data User -->
+<form id="filterForm" method="GET" class="mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+    <div class="flex justify-end">
+        {{-- Sisi Kanan: Input Live Search Premium dengan Ikon Lup --}}
+        <div class="relative w-full md:w-80">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari nama atau username..."
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+            >
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</form>
+
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full whitespace-nowrap">
@@ -48,22 +66,18 @@
             <tbody class="divide-y divide-gray-50">
                 @forelse($user as $item)
                     <tr class="hover:bg-teal-50/20 transition-colors duration-200">
-                        <!-- Nomor -->
                         <td class="px-6 py-4 text-sm font-medium text-gray-500">
                             {{ $loop->iteration }}
                         </td>
                         
-                        <!-- Nama Lengkap -->
                         <td class="px-6 py-4 text-sm font-bold text-gray-800">
                             {{ $item->name }}
                         </td>
 
-                        <!-- Username -->
                         <td class="px-6 py-4 text-sm text-gray-600 font-medium">
-                            <span class="text-gray-400"></span>{{ $item->username }}
+                            {{ $item->username }}
                         </td>
                         
-                        <!-- Badge Role -->
                         <td class="px-6 py-4 text-sm">
                             @if($item->role == 'admin')
                                 <span class="inline-flex items-center gap-1 bg-teal-50 text-teal-700 px-2.5 py-1 rounded-lg text-xs font-bold border border-teal-100 uppercase tracking-wide">
@@ -82,7 +96,6 @@
                             @endif
                         </td>
 
-                        <!-- Afiliasi Masjid dengan Icon -->
                         <td class="px-6 py-4 text-sm font-medium text-gray-600">
                             @if($item->masjid)
                                 <span class="inline-flex items-center gap-1.5 text-emerald-700">
@@ -97,10 +110,8 @@
                             @endif
                         </td>
                         
-                        <!-- Tombol Aksi -->
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <!-- Tombol Edit -->
                                 <a href="{{ route('user.edit', $item->id) }}"
                                    class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,7 +120,6 @@
                                     Edit
                                 </a>
 
-                                <!-- Tombol Hapus Pop-up -->
                                 <button type="button"
                                         onclick="openDeleteModal('{{ $item->id }}', '{{ addslashes($item->name) }}')"
                                         class="inline-flex items-center gap-1 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors">
@@ -138,30 +148,20 @@
     </div>
 </div>
 
-<!-- Pagination -->
 <div class="mt-6">
     {{ $user->links() }}
 </div>
 
-<!-- ============================================== -->
-<!-- FORM HAPUS GLOBAL & MODAL POP-UP PREMIUM        -->
-<!-- ============================================== -->
-
-<!-- Form Request Hapus Tersembunyi -->
 <form id="global-delete-form" method="POST" class="hidden">
     @csrf
     @method('DELETE')
 </form>
 
-<!-- Modal Pop-Up Kustom -->
 <div id="delete-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 overflow-x-hidden overflow-y-auto">
-    <!-- Backdrop Blur -->
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeDeleteModal()"></div>
 
-    <!-- Box Konten Modal -->
     <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 transform transition-all scale-95 duration-300 opacity-100 z-10">
         <div class="text-center">
-            <!-- Lingkaran Icon Warning -->
             <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-rose-50 text-rose-600 mb-4">
                 <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -174,7 +174,6 @@
             </p>
         </div>
         
-        <!-- Pilihan Aksi -->
         <div class="mt-6 flex flex-col sm:flex-row gap-3">
             <button type="button" 
                     onclick="closeDeleteModal()"
@@ -190,21 +189,17 @@
     </div>
 </div>
 
-<!-- Script Operasional Dinamis -->
 <script>
     function openDeleteModal(id, name) {
         const modal = document.getElementById('delete-modal');
         const itemNameSpan = document.getElementById('modal-item-name');
         const deleteForm = document.getElementById('global-delete-form');
         
-        // 1. Sematkan nama user ke dalam konfirmasi teks modal
         itemNameSpan.textContent = `"${name}"`;
         
-        // 2. Format URL endpoint destroy berdasarkan ID target
         let routePattern = "{{ route('user.destroy', ':id') }}";
         deleteForm.action = routePattern.replace(':id', id);
         
-        // 3. Munculkan Modal
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.classList.add('overflow-hidden');
@@ -220,6 +215,30 @@
     function submitDeleteForm() {
         document.getElementById('global-delete-form').submit();
     }
+</script>
+
+<script>
+let timeout = null;
+const searchInput = document.getElementById('searchInput');
+
+if (searchInput) {
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            document.getElementById('filterForm').submit();
+        }, 500);
+    });
+
+    window.onload = function () {
+        if (searchInput.value.length > 0) {
+            searchInput.focus();
+            searchInput.setSelectionRange(
+                searchInput.value.length,
+                searchInput.value.length
+            );
+        }
+    };
+}
 </script>
 
 @endsection

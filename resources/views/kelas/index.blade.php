@@ -2,7 +2,6 @@
 
 @section('content')
 
-<!-- Header & Tombol Tambah -->
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
     <div>
         <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight">
@@ -20,7 +19,6 @@
     </a>
 </div>
 
-<!-- Notifikasi Sukses -->
 @if(session('success'))
     <div class="mb-6 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 px-4 py-3 rounded-xl flex items-center shadow-sm">
         <svg class="w-5 h-5 mr-2.5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +28,85 @@
     </div>
 @endif
 
-<!-- Tabel Data Kelas -->
+{{-- FORM FILTER DAN PENCARIAN YANG DIPERBARUI --}}
+<form id="filterForm" method="GET" class="mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+
+        {{-- Sisi Kiri: Filter Dropdowns --}}
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            
+            @if(auth()->user()->role == 'admin')
+            {{-- Filter Masjid --}}
+            <div class="relative w-full sm:w-56">
+                <select
+                    name="masjid"
+                    onchange="document.getElementById('filterForm').submit()"
+                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+                >
+                    <option value="">Semua Masjid</option>
+                    @foreach($masjid as $item)
+                        <option value="{{ $item->id }}" @selected(request('masjid') == $item->id)>
+                            {{ $item->nama }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+            @endif
+
+            {{-- Sort / Urutkan --}}
+            <div class="relative w-full sm:w-48">
+                <select
+                    name="sort"
+                    onchange="document.getElementById('filterForm').submit()"
+                    class="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+                >
+                    <option value="">Urutkan Nama</option>
+                    <option value="asc" @selected(request('sort') == 'asc')>Nama A-Z</option>
+                    <option value="desc" @selected(request('sort') == 'desc')>Nama Z-A</option>
+                </select>
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Sisi Kanan: Live Search Input --}}
+        <div class="relative w-full lg:w-80">
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari nama kelas..."
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white transition-all"
+            >
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+
+    </div>
+</form>
+
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full whitespace-nowrap">
@@ -62,16 +138,14 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <!-- Tombol Edit -->
                                 <a href="{{ route('kelas.edit', $item->id) }}"
                                    class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/xl" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                     Edit
                                 </a>
 
-                                <!-- Tombol Hapus Premium (Memicu Modal Kustom) -->
                                 <button type="button"
                                         onclick="openDeleteModal('{{ $item->id }}', '{{ addslashes($item->nama) }}')"
                                         class="inline-flex items-center gap-1 bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors">
@@ -100,30 +174,20 @@
     </div>
 </div>
 
-<!-- Pagination -->
 <div class="mt-6">
     {{ $kelas->links() }}
 </div>
 
-<!-- ============================================== -->
-<!-- FORM HAPUS GLOBAL & MODAL POP-UP PREMIUM        -->
-<!-- ============================================== -->
-
-<!-- Form Request Hapus Tunggal -->
 <form id="global-delete-form" method="POST" class="hidden">
     @csrf
     @method('DELETE')
 </form>
 
-<!-- Modal Pop-Up Kustom -->
 <div id="delete-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 overflow-x-hidden overflow-y-auto">
-    <!-- Backdrop Blur Gelap -->
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeDeleteModal()"></div>
 
-    <!-- Konten Box Modal -->
     <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 p-6 transform transition-all scale-95 duration-300 opacity-100 z-10">
         <div class="text-center">
-            <!-- Lingkaran Icon Warning -->
             <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-rose-50 text-rose-600 mb-4">
                 <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -136,7 +200,6 @@
             </p>
         </div>
         
-        <!-- Pilihan Aksi -->
         <div class="mt-6 flex flex-col sm:flex-row gap-3">
             <button type="button" 
                     onclick="closeDeleteModal()"
@@ -152,21 +215,17 @@
     </div>
 </div>
 
-<!-- Script Operasional Dinamis -->
 <script>
     function openDeleteModal(id, name) {
         const modal = document.getElementById('delete-modal');
         const itemNameSpan = document.getElementById('modal-item-name');
         const deleteForm = document.getElementById('global-delete-form');
         
-        // 1. Masukkan nama kelas ke teks konfirmasi
         itemNameSpan.textContent = `"${name}"`;
         
-        // 2. Buat URL Action tujuan secara dinamis untuk Route Kelas
         let routePattern = "{{ route('kelas.destroy', ':id') }}";
         deleteForm.action = routePattern.replace(':id', id);
         
-        // 3. Tampilkan Modal
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.classList.add('overflow-hidden');
@@ -182,6 +241,30 @@
     function submitDeleteForm() {
         document.getElementById('global-delete-form').submit();
     }
+</script>
+
+<script>
+let timeout = null;
+const searchInput = document.getElementById('searchInput');
+
+if (searchInput) {
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            document.getElementById('filterForm').submit();
+        }, 500);
+    });
+
+    window.onload = function () {
+        if (searchInput.value.length > 0) {
+            searchInput.focus();
+            searchInput.setSelectionRange(
+                searchInput.value.length,
+                searchInput.value.length
+            );
+        }
+    };
+}
 </script>
 
 @endsection
