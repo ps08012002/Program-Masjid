@@ -247,8 +247,11 @@ username : arra
 Password : 12345678
 role     : admin
 ```
+## 🙋 Create New User For the First Time
 
-Jika tidak menggunakan seed bisa create akun baru dengan url [ipserver/UwaaW]
+Jika tidak menggunakan seed bisa create akun baru dengan url [ IP_Server/UwaaW ]
+
+---
 
 ### 👑 Admin
 
