@@ -25,7 +25,7 @@ Program Masjid adalah aplikasi berbasis web yang dirancang untuk membantu proses
 
 ### ⚙️ Backend
 
-- PHP 8.x
+- PHP 8.3++
 - Laravel 12/13
 
 ### 🎨 Frontend
@@ -147,9 +147,8 @@ program-masjid/
 
 ---
 
-## 🚀 Cara Menjalankan Program
 
-### 📥 Getting Started
+## 📥 Getting Started
 
 Clone repository:
 
@@ -220,7 +219,14 @@ php artisan db:seed
 php artisan storage:link
 ```
 
-#### 8️⃣ Jalankan Program
+#### 8️⃣ Build Program
+
+```bash
+npm run build
+```
+
+---
+### 🚀 Cara Menjalankan Program
 
 ```bash
 composer run dev
@@ -228,7 +234,21 @@ composer run dev
 
 ---
 
-## 📚 Penggunaan
+## 🔑 Default Account
+
+Berikut akun bawaan yang dapat digunakan untuk mengakses aplikasi setelah menjalankan seeder:
+
+```bash
+username : ps08012002
+Password : 12345678
+role     : admin
+
+username : arra
+Password : 12345678
+role     : admin
+```
+
+Jika tidak menggunakan seed bisa create akun baru dengan url [ipserver/UwaaW]
 
 ### 👑 Admin
 
