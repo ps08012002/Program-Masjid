@@ -1,4 +1,4 @@
-<img width="1913" height="997" alt="image" src="https://github.com/user-attachments/assets/73dfe62c-01fa-4bbe-844d-6e9e8dad4d9e" /># 🕌 Program Masjid
+# 🕌 Program Masjid
 
 ## 📖 Deskripsi Program
 
