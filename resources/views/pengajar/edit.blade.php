@@ -9,7 +9,7 @@
             Edit Data Pengajar
         </h1>
         <p class="text-sm text-gray-500 mt-1">
-            Perbarui informasi profil asatidz/pengajar, kontak operasional, serta alokasi kelas pangkuannya.
+            Perbarui informasi profil asatidz/pengajar, kontak operasional, serta alokasi kelas pengajar.
         </p>
     </div>
 
@@ -70,7 +70,7 @@
 
         <div>
             <label for="id_kelas" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
-                Kelas Pangkuan / Bimbingan
+                Kelas Pengajar
             </label>
             <div class="relative">
                 <select id="id_kelas"

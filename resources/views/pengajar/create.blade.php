@@ -69,7 +69,7 @@
 
         <div>
             <label for="id_kelas" class="block text-sm font-semibold text-gray-700 tracking-wide mb-2">
-                Kelas Pangkuan / Bimbingan
+                Kelas Pangajar
             </label>
             <div class="relative">
                 <select id="id_kelas"

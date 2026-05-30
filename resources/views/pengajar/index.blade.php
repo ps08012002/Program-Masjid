@@ -36,7 +36,7 @@
                     <th class="px-6 py-4 text-left text-sm font-semibold text-teal-800 tracking-wider w-20">No</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-teal-800 tracking-wider">Nama Pengajar</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold text-teal-800 tracking-wider">Nomor Telepon</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-teal-800 tracking-wider">Kelas Pangkuan</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-teal-800 tracking-wider">Kelas Pengajar</th>
                     <th class="px-6 py-4 text-center text-sm font-semibold text-teal-800 tracking-wider w-40">Aksi</th>
                 </tr>
             </thead>
