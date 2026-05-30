@@ -77,10 +77,10 @@ else
     $idMasjid = $request->id_masjid;
 }
 
-    Kelas::create([
-        'nama' => $request->nama,
-        'id_masjid' => $request->id_masjid,
-    ]);
+Kelas::create([
+    'nama' => $request->nama,
+    'id_masjid' => $idMasjid,
+]);
 
     return redirect()
         ->route('kelas.index')
@@ -102,9 +102,27 @@ else
     public function edit(string $id)
     {
 
-    $kelas = Kelas::findOrFail($id);
+    if (auth()->user()->role == 'admin') {
 
-    $masjid = Masjid::orderBy('nama')->get();
+        $kelas = Kelas::findOrFail($id);
+
+        $masjid = Masjid::orderBy('nama')->get();
+
+    } else {
+
+        $kelas = Kelas::where(
+            'id',
+            $id
+        )->where(
+            'id_masjid',
+            auth()->user()->id_masjid
+        )->firstOrFail();
+
+        $masjid = Masjid::where(
+            'id',
+            auth()->user()->id_masjid
+        )->get();
+    }
 
     return view('kelas.edit', compact(
         'kelas',
@@ -124,7 +142,29 @@ else
         'id_masjid' => 'required|exists:tb_masjid,id',
     ]);
 
+    if (auth()->user()->role == 'admin') {
+
     $kelas = Kelas::findOrFail($id);
+
+    $idMasjid = $request->id_masjid;
+
+} else {
+
+    $kelas = Kelas::where(
+        'id',
+        $id
+    )->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )->firstOrFail();
+
+    $idMasjid = auth()->user()->id_masjid;
+}
+
+$kelas->update([
+    'nama' => $request->nama,
+    'id_masjid' => $idMasjid,
+]);
 
     $kelas->update([
         'nama' => $request->nama,
@@ -142,7 +182,22 @@ else
      */
     public function destroy(string $id)
     {
+if (auth()->user()->role == 'admin') {
+
     $kelas = Kelas::findOrFail($id);
+
+} else {
+
+    $kelas = Kelas::where(
+        'id',
+        $id
+    )->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )->firstOrFail();
+}
+
+$kelas->delete();
 
     $kelas->delete();
 

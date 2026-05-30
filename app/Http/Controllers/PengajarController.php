@@ -70,6 +70,22 @@ if (auth()->user()->role == 'admin') {
         'id_kelas' => 'required|exists:tb_kelas,id',
     ]);
 
+    if (auth()->user()->role != 'admin') {
+
+    $kelasValid = Kelas::where(
+        'id',
+        $request->id_kelas
+    )
+    ->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->exists();
+
+    if (!$kelasValid) {
+        abort(403);
+    }
+}
     Pengajar::create([
         'nama' => $request->nama,
         'nomer_tlpn' => $request->nomer_tlpn,
@@ -105,7 +121,19 @@ if (
     abort(403);
 }
 
+if (auth()->user()->role == 'admin') {
+
     $kelas = Kelas::orderBy('nama')->get();
+
+} else {
+
+    $kelas = Kelas::where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->orderBy('nama')
+    ->get();
+}
 
     return view('pengajar.edit', compact(
         'pengajar',
@@ -124,7 +152,33 @@ if (
         'id_kelas' => 'required|exists:tb_kelas,id',
     ]);
 
-    $pengajar = Pengajar::findOrFail($id);
+$pengajar = Pengajar::with('kelas')
+    ->findOrFail($id);
+
+if (
+    auth()->user()->role != 'admin'
+    &&
+    $pengajar->kelas->id_masjid != auth()->user()->id_masjid
+) {
+    abort(403);
+}
+
+if (auth()->user()->role != 'admin') {
+
+    $kelasValid = Kelas::where(
+        'id',
+        $request->id_kelas
+    )
+    ->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->exists();
+
+    if (!$kelasValid) {
+        abort(403);
+    }
+}
 
     $pengajar->update([
         'nama' => $request->nama,
@@ -142,9 +196,18 @@ if (
      */
     public function destroy(string $id)
     {
-            $pengajar = Pengajar::findOrFail($id);
+$pengajar = Pengajar::with('kelas')
+    ->findOrFail($id);
 
-    $pengajar->delete();
+if (
+    auth()->user()->role != 'admin'
+    &&
+    $pengajar->kelas->id_masjid != auth()->user()->id_masjid
+) {
+    abort(403);
+}
+
+$pengajar->delete();
 
     return redirect()
         ->route('pengajar.index')

@@ -80,6 +80,23 @@ class MuridController extends Controller
 
     }
 
+    if (auth()->user()->role != 'admin') {
+
+    $kelasValid = Kelas::where(
+        'id',
+        $request->id_kelas
+    )
+    ->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->exists();
+
+    if (!$kelasValid) {
+        abort(403);
+    }
+}
+
     Murid::create([
         'nama' => $request->nama,
         'foto' => $foto,
@@ -115,7 +132,19 @@ if (
     abort(403);
 }
 
+if (auth()->user()->role == 'admin') {
+
     $kelas = Kelas::orderBy('nama')->get();
+
+} else {
+
+    $kelas = Kelas::where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->orderBy('nama')
+    ->get();
+}
 
     return view('murid.edit', compact(
         'murid',
@@ -155,6 +184,24 @@ if (
             ->store('murid', 'public');
     }
 
+    
+    if (auth()->user()->role != 'admin') {
+        
+        $kelasValid = Kelas::where(
+        'id',
+        $request->id_kelas
+    )
+    ->where(
+        'id_masjid',
+        auth()->user()->id_masjid
+    )
+    ->exists();
+    
+    if (!$kelasValid) {
+        abort(403);
+        }
+        }
+    
     $murid->nama = $request->nama;
     $murid->id_kelas = $request->id_kelas;
 
@@ -170,7 +217,8 @@ if (
      */
     public function destroy(string $id)
     {
-         $murid = Murid::findOrFail($id);
+         $murid = Murid::with('kelas')
+    ->findOrFail($id);
 
     if ($murid->foto) {
         Storage::disk('public')->delete($murid->foto);
